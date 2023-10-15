@@ -2,9 +2,8 @@ FAVORITE_NUMBER = 1362
 TARGET = (31, 39)
 
 
-# I tried optimizing by using bit operations and functools.cache, but neither seems to help
 def is_open(x, y):
-    return sum(bit == '1' for bit in bin(x*x + 3*x + 2*x*y + y + y*y + FAVORITE_NUMBER)[2:]) % 2 == 0
+    return (x*x + 3*x + 2*x*y + y + y*y + FAVORITE_NUMBER).bit_count() % 2 == 0
 
 
 start = (1, 1)
