@@ -1,5 +1,6 @@
 import math
 
+
 total = 0
 for line in open('day09.txt'):
     i = 0

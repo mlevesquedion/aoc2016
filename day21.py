@@ -22,7 +22,7 @@ for line in INSTRUCTIONS:
     elif line.startswith('rotate right'):
         REVERSED_INSTRUCTIONS.append(line.replace('right', 'left'))
     elif line.startswith('move'):
-        i, j =  re.findall('\d+', line)
+        i, j =  re.findall(r'\d+', line)
         REVERSED_INSTRUCTIONS.append(f'move position {j} to position {i}')
     # swaps and reverse are their own inverses
     else:
@@ -34,12 +34,19 @@ def scramble(password, instructions):
     password = list(password)
     for line in instructions:
         if line.startswith('swap position'):
-            i, j = map(int, re.findall('\d+', line))
+            i, j = map(int, re.findall(r'\d+', line))
             password[i], password[j] = password[j], password[i]
         elif line.startswith('swap letter'):
-            a, b = re.findall('letter ([a-z])', line)
+            a, b = re.findall(r'letter ([a-z])', line)
             i, j = password.index(a), password.index(b)
             password[i], password[j] = password[j], password[i]
+        elif line.startswith('move'):
+            i, j = map(int, re.findall(r'\d+', line))
+            letter = password.pop(i)
+            password.insert(j, letter)
+        elif line.startswith('reverse'):
+            i, j = map(int, re.findall(r'\d+', line))
+            password = password[:i] + password[i:j+1][::-1] + password[j+1:]
         elif line.startswith('rotate based'):
             letter = line[-2]
             index = password.index(letter)
@@ -57,13 +64,6 @@ def scramble(password, instructions):
             if direction == 'right':
                 rotation *= -1
             password = password[rotation:] + password[:rotation]
-        elif line.startswith('reverse'):
-            i, j = map(int, re.findall('\d+', line))
-            password = password[:i] + password[i:j+1][::-1] + password[j+1:]
-        elif line.startswith('move'):
-            i, j = map(int, re.findall('\d+', line))
-            letter = password.pop(i)
-            password.insert(j, letter)
     return ''.join(password)
 
 

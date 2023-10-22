@@ -1,5 +1,7 @@
-SET, MOV, INC, DEC, JMP, JNZ, NOP, OUT = range(8)
+import itertools
 
+
+SET, MOV, INC, DEC, JMP, JNZ, NOP, OUT = range(8)
  
 code = []
 register_index = 'abcd'.index
@@ -27,9 +29,9 @@ for parts in [line.split() for line in open('day25.txt')]:
 
 
 def simulate(i):
-    out = []
     registers = [i, 0, 0, 0]
     pc = 0
+    out = 0
     while pc < len(code):
         instruction = code[pc]
         if instruction[0] == SET:
@@ -48,19 +50,16 @@ def simulate(i):
                 pc += instruction[2]
                 continue
         elif instruction[0] == OUT:
-            out.append(registers[instruction[1]])
-            if tuple(out) == (0, 1, 0, 1, 0, 1, 0, 1):
-                return i
-            if len(out) == 8:
+            if registers[instruction[1]] != out % 2:
                 return None
+            out += 1
+            if out == 10:
+                return i
         # fallthrough for NOP
         pc += 1
 
 
-
-i = 1
-while True:
+for i in itertools.count():
     if simulate(i):
         print('part 1:', i)
         break
-    i += 1

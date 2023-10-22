@@ -17,21 +17,23 @@ def md5_stretched(bytestring):
 
 def find_index(hash_function):
     i = 0
-    keys = 0
-    candidates = collections.defaultdict(list)
+    keycount = 0
+    candidate_keys = collections.defaultdict(list)
     while True:
         digest = hash_function(SALT + str(i).encode())
-        for c in list(candidates):
-            if c in digest:
-                for ci, _ in candidates[c]:
-                    keys += 1
-                    if keys == 64:
+        for quintuple in list(candidate_keys):
+            if quintuple in digest:
+                for ci, _ in candidate_keys[quintuple]:
+                    keycount += 1
+                    if keycount == 64:
                         return ci
-                del candidates[c]
-            candidates[c] = [(ci, count-1) for (ci, count) in candidates[c] if count-1 > 0]
+                del candidate_keys[quintuple]
+            candidate_keys[quintuple] = [(ci, expiration) for (ci, expiration) in candidate_keys[quintuple] if expiration > i]
+            if not candidate_keys[quintuple]:
+                del candidate_keys[quintuple]
         for j in range(0, len(digest)-2, 1):
-            if len(set(digest[j:j+3])) == 1:
-                candidates[digest[j]*5].append((i, 1000))
+            if digest[j] == digest[j+1] == digest[j+2]:
+                candidate_keys[digest[j]*5].append((i, i+1000))
                 break
         i += 1
 

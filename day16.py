@@ -1,14 +1,17 @@
+import itertools
+
+
 def dragon(data, disk_length):
-    while len(data) < disk_length:
-        data = data + '0' + ''.join(['01'[x == '0'] for x in data[::-1]])
-    data = data[:disk_length]
-    checksum = data
+    disk = [int(c) for c in data]
+    while len(disk) < disk_length:
+        disk.append(0)
+        disk.extend([1-b for b in reversed(disk)])
+    checksum = disk[:disk_length]
     while True:
-        chunks = [checksum[i:i+2] for i in range(0, len(checksum)-1, 2)]
-        checksum = ''.join('01'[a == b] for a, b in chunks)
+        checksum = [a == b for a, b in itertools.batched(checksum, 2)]
         if len(checksum) % 2:
             break
-    return checksum
+    return ''.join('01'[b] for b in checksum)
 
 
 data = '00101000101111010'

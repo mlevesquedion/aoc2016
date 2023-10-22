@@ -1,11 +1,13 @@
+import itertools
 import math
 import re
+
 
 discs = []
 start_time, step = 0, 1
 multiple = 1
 for i, line in enumerate(open('day15.txt'), 1):
-    _, positions, _, start = map(int, re.findall('\d+', line))
+    _, positions, _, start = map(int, re.findall(r'\d+', line))
     discs.append((positions, start))
     if positions > step:
         start_time = - ((start + i) % positions)
@@ -16,12 +18,9 @@ step = math.lcm(step, multiple)
 
 
 def find_time():
-    time = start_time
-    while True:
+    for time in itertools.count(start_time, step):
         if all((start + time + i) % positions == 0 for i, (positions, start) in enumerate(discs, 1)):
-            break
-        time += step
-    return time
+            return time
 
 
 print('part 1:', find_time())

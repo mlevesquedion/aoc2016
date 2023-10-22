@@ -1,13 +1,11 @@
 import math
 
+
 n = 3004953
 
 
 def josephus(n):
     return 2 * (n - 2**(int(math.log(n, 2)))) + 1
-
-
-print('part 1:', josephus(n))
 
 
 def part2(n):
@@ -19,4 +17,5 @@ def part2(n):
     return result
 
 
+print('part 1:', josephus(n))
 print('part 2:', part2(n))
